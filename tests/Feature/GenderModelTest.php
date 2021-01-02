@@ -7,83 +7,65 @@ use Tests\TestCase;
 
 class GenderModelTest extends TestCase
 {
+
+
     /**
      * @test
      * @testdox Adding Gender
+     * @group ignore
      */
     public function testNewGender()
     {
-        $attr = [
-            'name' => $this->faker->name,
-            'description' => $this->faker->sentence,
-            'is_active' => $this->faker->boolean
-        ];
-
-        $category = Gender::create($attr);
-
-        self::assertDatabaseHas('genders', $attr);
+        $gender = factory(Gender::class)->create();
+        $this->assertDatabaseHas('genders', $gender->getAttributes());
 
     }
+
 
     /**
      * @test
      * @testdox Updating Gender
+     * @group ignore
      */
     public function testUpdateGender()
     {
 
-        $attr = [
-            'name' => $this->faker->name,
-            'description' => $this->faker->sentence,
-            'is_active' => $this->faker->boolean
-        ];
+        $gender = factory(Gender::class)->create();
 
+        $gender->is_active = false;
+        $gender->description = null;
 
-        $category = Gender::create($attr);
-        $category->is_active = false;
-        $category->description = null;
+        $gender->save();
 
-        $category->save();
+        $this->assertFalse($gender->is_active);
+        $this->assertNull($gender->description);
 
-        $this->assertFalse($category->is_active);
-        $this->assertNull($category->description);
-        self::assertDatabaseHas('genders', $category->getAttributes());
+        $this->assertDatabaseHas('genders', $gender->getAttributes());
     }
 
     /**
      * @test
      * @testdox Showing Gender
+     * @group ignore
      */
     public function testShowGender()
     {
 
-        $attr = [
-            'name' => $this->faker->name,
-            'description' => $this->faker->sentence,
-            'is_active' => $this->faker->boolean
-        ];
-
-        $user = Gender::create($attr);
-        $last = Gender::latest()->first();
-        self::assertDatabaseHas('genders', $last->getAttributes());
+        $gender = factory(Gender::class)->create();
+        $this->assertDatabaseHas('genders', $gender->getAttributes());
     }
 
     /**
      * @test
      * @testdox Removing Gender
+     * @group ignore
      */
     public function testDestroyGender()
     {
 
-        $attr = [
-            'name' => $this->faker->name,
-            'description' => $this->faker->sentence,
-            'is_active' => $this->faker->boolean
-        ];
+        $gender = factory(Gender::class)->create();
 
-        $category = Gender::create($attr);
-
-        $category->delete();
-        self::assertSoftDeleted('genders', $category->getAttributes());
+        $gender->delete();
+        $this->assertSoftDeleted('genders', $gender->getAttributes());
     }
 }

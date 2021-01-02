@@ -8,25 +8,25 @@ use Tests\TestCase;
 
 class GenderTest extends TestCase
 {
-    public function testClassExist()
-    {
-        $gender = new Gender();
-        $this->assertInstanceOf(Gender::class, $gender);
-    }
 
-    public function testFillable()
+    public function testModel()
     {
-        $gender = new Gender();
+        $model = new Gender();
         $array = ['name', 'description', 'is_active'];
-        $this->assertEquals($array, $gender->getFillable());
-    }
-
-    public function testNewInstance(){
         $attr = [
             'name' => $this->faker->name
         ];
 
-        $gender = new Gender($attr);
-        self::assertEquals($attr, $gender->getAttributes());
+        // Model exist
+        $this->assertModelExist($model);
+
+        // Fillable Model exist
+        $this->assertModelFillable($model, $array);
+
+        // New instance of Model
+        $model = new Gender($attr);
+        $this->assertModelNewInstance($model, $attr);
     }
+
+
 }
