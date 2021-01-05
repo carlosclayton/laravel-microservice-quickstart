@@ -1,23 +1,20 @@
 <?php
 
-namespace App\Http\Controllers\Api;
 
+namespace Tests\Stubs\Controllers;
+
+
+use App\Http\Controllers\BasicCrudController;
 use App\Http\Controllers\Controller;
-use App\Models\Gender;
+use Tests\Stubs\Models\CategoryStub;
 
-class GenderController extends Controller
+class CategoryControllerStub extends BasicCrudController
 {
-    /**
-     * @return Gender
-     */
-    protected function model()
-    {
-        return Gender::class;
+
+    protected function model(){
+        return CategoryStub::class;
     }
 
-    /**
-     * @return string[]
-     */
     protected function rulesStore()
     {
         return [
@@ -27,9 +24,6 @@ class GenderController extends Controller
         ];
     }
 
-    /**
-     * @return string[]
-     */
     protected function rulesUpdate()
     {
         return [

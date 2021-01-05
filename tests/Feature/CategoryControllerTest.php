@@ -5,6 +5,11 @@ namespace Tests\Feature;
 use App\Models\Category;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Http\Request;
+use Ramsey\Uuid\Uuid;
+use Ramsey\Uuid\UuidFactory;
+use Ramsey\Uuid\UuidInterface;
+use Tests\Stubs\Models\CategoryStub;
 use Tests\TestCase;
 
 class CategoryControllerTest extends TestCase
@@ -39,6 +44,24 @@ class CategoryControllerTest extends TestCase
         $response->assertSeeText($attr['name']);
         $this->assertEquals($response->json('name'), $attr['name']);
     }
+
+
+    public function testStoreUuidValidation(){
+
+        $attr = [
+            'name' => $this->faker->name,
+            'description' => $this->faker->sentence,
+            'is_active' => $this->faker->boolean
+        ];
+
+        $response = $this->json('POST', route('api.categories.store'), $attr);
+        $response->assertStatus(201);
+        $response->assertSeeText($attr['name']);
+
+        $this->assertTrue(Uuid::isValid($response->json('id')));
+
+    }
+
     public function testStoreNameNotNull()
     {
 
@@ -47,7 +70,6 @@ class CategoryControllerTest extends TestCase
         ]);
         $response->assertStatus(422);
         $response->assertJsonValidationErrors(['name']);
-
 
     }
 
