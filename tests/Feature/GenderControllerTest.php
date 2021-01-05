@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\Gender;
+use Ramsey\Uuid\Uuid;
 use Tests\TestCase;
 
 class GenderControllerTest extends TestCase
@@ -39,6 +40,27 @@ class GenderControllerTest extends TestCase
         $response->assertStatus(201)
                  ->assertSeeText($attr['name']);
         $this->assertEquals($response->json('name'), $attr['name']);
+    }
+
+    /**
+     * @test
+     * @testdox Store Controller Uuid Validation
+     * @group ignore
+     */
+    public function testStoreUuidValidation(){
+
+        $attr = [
+            'name' => $this->faker->name,
+            'description' => $this->faker->sentence,
+            'is_active' => $this->faker->boolean
+        ];
+
+        $response = $this->json('POST', route('api.genders.store'), $attr);
+        $response->assertStatus(201);
+        $response->assertSeeText($attr['name']);
+
+        $this->assertTrue(Uuid::isValid($response->json('id')));
+
     }
 
     /**
