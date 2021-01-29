@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Http\Controllers\BasicCrudController;
 use App\Http\Controllers\Controller;
 use App\Models\Gender;
 
-class GenderController extends Controller
+class GenderController extends BasicCrudController
 {
     /**
      * @return Gender
