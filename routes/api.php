@@ -23,5 +23,6 @@ Route::group([
 ], function() {
     Route::resource('categories', 'CategoryController');
     Route::resource('genders', 'GenderController');
+    Route::resource('castmembers', 'CastMemberController');
 });
 
