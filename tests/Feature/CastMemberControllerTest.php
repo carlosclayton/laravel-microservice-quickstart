@@ -29,62 +29,70 @@ class CastMemberControllerTest extends TestCase
     {
 
         $response = $this->get('api/castmembers');
-        $response->assertStatus(200);
-        $this->assertEquals($response->json('total'), 1);
+        $response
+            ->assertStatus(200)
+            ->assertJson($response->json)
+            ->assertEquals($response->json('total'), 1);
 
     }
 
     public function testStore()
     {
 
-
         $response = $this->json('POST', route('api.castmembers.store'), $this->attr);
         $response->assertStatus(201);
 
-        $this->assertEquals($response->json('name'), $this->attr['name']);
-        $this->assertEquals($response->json('type'), $this->attr['type']);
-        $this->assertEquals($response->json('description'), $this->attr['description']);
+        $this
+            ->assertEquals($response->json('name'), $this->attr['name'])
+            ->assertEquals($response->json('type'), $this->attr['type'])
+            ->assertEquals($response->json('description'), $this->attr['description'])
+            ->assertJson($response->json);
     }
 
 
-    public function testStoreUuidValidation(){
+    public function testStoreUuidValidation()
+    {
 
         $response = $this->json('POST', route('api.castmembers.store'), $this->attr);
-        $response->assertStatus(201);
-        $this->assertTrue(Uuid::isValid($response->json('id')));
+        $response
+            ->assertStatus(201)
+            ->assertJson($response->json)
+            ->assertTrue(Uuid::isValid($response->json('id')));
 
     }
 
     public function testStoreNameNotNull()
     {
 
-        $response = $this->json('POST', route('api.castmembers.store'),[
+        $response = $this->json('POST', route('api.castmembers.store'), [
             'name' => ''
         ]);
-        $response->assertStatus(422);
-        $response->assertJsonValidationErrors(['name']);
+        $response
+            ->assertStatus(422)
+            ->assertJsonValidationErrors(['name']);
 
     }
 
     public function testStoreValidationNameMax()
     {
 
-        $response = $this->json('POST', route('api.castmembers.store'),[
+        $response = $this->json('POST', route('api.castmembers.store'), [
             'name' => $this->faker->sentence(258)
         ]);
-        $response->assertStatus(422);
-        $response->assertJsonValidationErrors(['name']);
+        $response
+            ->assertStatus(422)
+            ->assertJsonValidationErrors(['name']);
 
     }
-
 
 
     public function testShow()
     {
 
-        $response = $this->json('GET', route('api.castmembers.show', $this->castmember->id) );
-        $response->assertStatus(200);
-        $this->assertEquals($response->json('name'), $this->castmember->name);
+        $response = $this->json('GET', route('api.castmembers.show', $this->castmember->id));
+        $response
+            ->assertStatus(200)
+            ->assertEquals($response->json('name'), $this->castmember->name);
 
     }
 
@@ -95,8 +103,10 @@ class CastMemberControllerTest extends TestCase
             'name' => $this->faker->name
         ]);
 
-        $response->assertStatus(200);
-        $this->assertEquals($response->json('name'), $this->castmember->name);
+        $response
+            ->assertStatus(200)
+            ->assertEquals($response->json('name'), $this->castmember->name)
+            ->assertJson($response->json);
 
     }
 
@@ -107,8 +117,9 @@ class CastMemberControllerTest extends TestCase
             'name' => ''
         ]);
 
-        $response->assertStatus(422);
-        $response->assertJsonValidationErrors(['name']);
+        $response
+            ->assertStatus(422)
+            ->assertJsonValidationErrors(['name']);
 
     }
 
@@ -120,8 +131,9 @@ class CastMemberControllerTest extends TestCase
             'description' => null
         ]);
 
-        $response->assertStatus(200);
-        $this->assertNull($response->json('description'));
+        $response
+            ->assertStatus(200)
+            ->assertNull($response->json('description'));
 
     }
 
@@ -130,8 +142,9 @@ class CastMemberControllerTest extends TestCase
 
         $response = $this->json('DELETE', route('api.castmembers.destroy', $this->castmember->id));
 
-        $response->assertStatus(204);
-        $response->assertNoContent();
+        $response
+            ->assertStatus(204)
+            ->assertNoContent();
 
     }
 }
