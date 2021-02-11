@@ -24,5 +24,6 @@ Route::group([
     Route::resource('categories', 'CategoryController');
     Route::resource('genders', 'GenderController');
     Route::resource('castmembers', 'CastMemberController');
+    Route::resource('videos', 'VideoController');
 });
 

@@ -1,9 +1,9 @@
 <?php
 
-use App\Models\Gender;
+use App\Models\Video;
 use Illuminate\Database\Seeder;
 
-class GenderSeeder extends Seeder
+class VideoSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -12,6 +12,6 @@ class GenderSeeder extends Seeder
      */
     public function run()
     {
-        factory(Gender::class, 100)->create();
+        factory(Video::class, 100)->create();
     }
 }
