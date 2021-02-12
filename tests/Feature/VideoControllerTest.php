@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\Category;
+use App\Models\Gender;
 use App\Models\Video;
 use Ramsey\Uuid\Uuid;
 use Tests\TestCase;
@@ -22,7 +23,8 @@ class VideoControllerTest extends TestCase
             'opened' => $this->faker->boolean,
             'duration' => rand(0, 240),
             'rating' => Video::RATING_LIST[array_rand(Video::RATING_LIST)],
-            'categories_id' => [factory(Category::class)->create()->id->toString()]
+            'categories_id' => [factory(Category::class)->create()->id->toString()],
+            'genders_id' => [factory(Gender::class)->create()->id->toString()],
         ];
 
         $this->video = factory(Video::class)->create();
@@ -43,8 +45,7 @@ class VideoControllerTest extends TestCase
             ->assertSeeText($this->video->title)
             ->assertSeeText($this->video->year_launched)
             ->assertSeeText($this->video->duration)
-            ->assertSeeText($this->video->rating)
-            ->assertSeeText($this->video->categories_id);
+            ->assertSeeText($this->video->rating);
 
         $this->assertEquals($response->json('total'), 1);
 
@@ -59,14 +60,15 @@ class VideoControllerTest extends TestCase
     {
 
         $response = $this->json('POST', route('api.videos.store'), $this->attr);
-
         $response
             ->assertStatus(201)
             ->assertJson($response->json())
             ->assertSeeText($this->attr['title'])
             ->assertSeeText($this->attr['year_launched'])
             ->assertSeeText($this->attr['duration'])
-            ->assertSeeText($this->attr['rating']);
+            ->assertSeeText($this->attr['rating'])
+            ->assertSeeText($this->video->categories_id)
+            ->assertSeeText($this->video->genders_id);
     }
 
     /**
@@ -79,7 +81,7 @@ class VideoControllerTest extends TestCase
 
         $response = $this->json('POST', route('api.videos.store'), $this->attr);
         $response->assertStatus(201)
-        ->assertJson($response->json());
+            ->assertJson($response->json());
 
         $this->assertTrue(Uuid::isValid($response->json('id')));
 
@@ -96,6 +98,7 @@ class VideoControllerTest extends TestCase
         $response = $this->json('POST', route('api.videos.store'), [
             'title' => ''
         ]);
+
         $response->assertStatus(422)
             ->assertJsonValidationErrors(['title']);
 
@@ -142,8 +145,15 @@ class VideoControllerTest extends TestCase
     {
         $response = $this->json('PUT', route('api.videos.show', $this->video->id), $this->attr);
 
-        $response->assertStatus(200);
-        $this->assertEquals($response->json('title'), $this->attr['title']);
+        $response
+            ->assertStatus(200)
+            ->assertJson($response->json())
+            ->assertSeeText($this->attr['title'])
+            ->assertSeeText($this->attr['year_launched'])
+            ->assertSeeText($this->attr['duration'])
+            ->assertSeeText($this->attr['rating'])
+            ->assertSeeText($this->video->categories_id)
+            ->assertSeeText($this->video->genders_id);
 
     }
 
@@ -180,6 +190,7 @@ class VideoControllerTest extends TestCase
             'duration' => $video->duration,
             'rating' => Video::RATING_LIST[array_rand(Video::RATING_LIST)],
             'categories_id' => [factory(Category::class)->create()->id->toString()],
+            'genders_id' => [factory(Gender::class)->create()->id->toString()],
             'description' => null
         ]);
 

@@ -14,4 +14,9 @@ class Gender extends Model
     protected $dates = ['deleted_at'];
 
     protected $fillable = ['name', 'description', 'is_active'];
+
+    public function categories(){
+        return  $this->belongsToMany(Category::class);
+    }
+
 }

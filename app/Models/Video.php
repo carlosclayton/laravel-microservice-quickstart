@@ -26,4 +26,9 @@ class Video extends Model
     public function categories(){
         return  $this->belongsToMany(Category::class);
     }
+
+    public function genders(){
+        return  $this->belongsToMany(Gender::class);
+    }
+
 }

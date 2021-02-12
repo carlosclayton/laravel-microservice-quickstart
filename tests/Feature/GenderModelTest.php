@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\Category;
 use App\Models\Gender;
 use Tests\TestCase;
 
@@ -23,6 +24,22 @@ class GenderModelTest extends TestCase
     public function testNewGender()
     {
         $this->assertDatabaseHas('genders', $this->gender->getAttributes());
+
+    }
+
+    /**
+     * @test
+     * @testdox Adding Gender with Category
+     */
+    public function testNewGenderWithCategory()
+    {
+        $category = factory(Category::class)->create();
+        $this->gender->categories()->sync([$category->id->toString()]);
+
+        $this->assertDatabaseHas('category_gender', [
+            'gender_id' => $this->gender->id,
+            'category_id' => $category->id
+        ]);
 
     }
 

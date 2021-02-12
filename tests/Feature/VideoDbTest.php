@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\Category;
+use App\Models\Gender;
 use App\Models\Video;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -54,6 +55,22 @@ class VideoDbTest extends TestCase
 
     /**
      * @test
+     * @testdox Adding Video with gender
+     */
+    public function testNewVideoWithGender()
+    {
+        $gender = factory(Gender::class)->create();
+        $this->video->genders()->sync([$gender->id->toString()]);
+
+        $this->assertDatabaseHas('gender_video', [
+            'video_id' => $this->video->id,
+            'gender_id' => $gender->id
+        ]);
+
+    }
+
+    /**
+     * @test
      * @testdox Updating Video
      */
     public function testUpdateVideo()
@@ -67,6 +84,8 @@ class VideoDbTest extends TestCase
         $this->assertNull($this->video->description);
         $this->assertDatabaseHas('videos', $this->video->getAttributes());
     }
+
+
 
     /**
      * @test

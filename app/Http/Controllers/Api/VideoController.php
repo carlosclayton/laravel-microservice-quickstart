@@ -30,8 +30,8 @@ class VideoController extends BasicCrudController
             'opened' => 'boolean',
             'duration' => 'required|integer',
             'rating' => 'required|in:'. implode(',', Video::RATING_LIST) ,
-            'categories_id' => 'required|array|exists:categories,id'
-
+            'categories_id' => 'required|array|exists:categories,id',
+            'genders_id' => 'required|array|exists:genders,id'
         ];
 
     }
@@ -41,7 +41,6 @@ class VideoController extends BasicCrudController
      */
     protected function rulesUpdate()
     {
-
         return [
             'title' => 'required|max:255',
             'description' => 'nullable',
@@ -49,8 +48,8 @@ class VideoController extends BasicCrudController
             'opened' => 'boolean',
             'duration' => 'required|integer',
             'rating' => 'required|in:'. implode(',', Video::RATING_LIST) ,
-            'categories_id' => 'required|array|exists:categories,id'
-
+            'categories_id' => 'required|array|exists:categories,id',
+            'genders_id' => 'required|array|exists:genders,id'
         ];
     }
 
@@ -60,6 +59,7 @@ class VideoController extends BasicCrudController
         /** @var Video $video */
         $video = $this->model()::create($validate);
         $video->categories()->sync($request->get('categories_id'));
+        $video->genders()->sync($request->get('genders_id'));
         $video->refresh();
         return $video;
     }
@@ -70,8 +70,9 @@ class VideoController extends BasicCrudController
 
         /** @var Video $video */
         $video = $this->model()::findOrFail($id);
-        $video->update($request->except('categories_id'));
+        $video->update($request->except('categories_id','genders_id'));
         $video->categories()->sync($request->get('categories_id'));
+        $video->genders()->sync($request->get('genders_id'));
         $video->refresh();
         return $video;
     }

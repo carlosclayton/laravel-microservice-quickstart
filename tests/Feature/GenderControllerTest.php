@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\Category;
 use App\Models\Gender;
 use Ramsey\Uuid\Uuid;
 use Tests\TestCase;
@@ -32,14 +33,16 @@ class GenderControllerTest extends TestCase
         $attr = [
             'name' => $this->faker->name,
             'description' => $this->faker->sentence,
-            'is_active' => $this->faker->boolean
+            'is_active' => $this->faker->boolean,
+            'categories_id' => [factory(Category::class)->create()->id->toString()],
         ];
 
-
         $response = $this->json('POST', route('api.genders.store'), $attr);
-        $response->assertStatus(201)
-                 ->assertSeeText($attr['name']);
-        $this->assertEquals($response->json('name'), $attr['name']);
+
+        $response
+            ->assertStatus(201)
+            ->assertSeeText($attr['name']);
+
     }
 
     /**
@@ -47,12 +50,14 @@ class GenderControllerTest extends TestCase
      * @testdox Store Controller Uuid Validation
      * @group ignore
      */
-    public function testStoreUuidValidation(){
+    public function testStoreUuidValidation()
+    {
 
         $attr = [
             'name' => $this->faker->name,
             'description' => $this->faker->sentence,
-            'is_active' => $this->faker->boolean
+            'is_active' => $this->faker->boolean,
+            'categories_id' => [factory(Category::class)->create()->id->toString()],
         ];
 
         $response = $this->json('POST', route('api.genders.store'), $attr);
@@ -71,14 +76,15 @@ class GenderControllerTest extends TestCase
     public function testStoreNameNotNull()
     {
 
-        $response = $this->json('POST', route('api.genders.store'),[
-            'name' => ''
+        $response = $this->json('POST', route('api.genders.store'), [
+            'name' => '',
         ]);
         $response->assertStatus(422)
-                 ->assertJsonValidationErrors(['name']);
+            ->assertJsonValidationErrors(['name']);
 
 
     }
+
     /**
      * @test
      * @testdox Store Controller with name max
@@ -87,11 +93,11 @@ class GenderControllerTest extends TestCase
     public function testStoreValidationNameMax()
     {
 
-        $response = $this->json('POST', route('api.genders.store'),[
+        $response = $this->json('POST', route('api.genders.store'), [
             'name' => $this->faker->sentence(258)
         ]);
         $response->assertStatus(422)
-                 ->assertJsonValidationErrors(['name']);
+            ->assertJsonValidationErrors(['name']);
 
     }
 
@@ -103,13 +109,13 @@ class GenderControllerTest extends TestCase
     public function testStoreValidationActive()
     {
 
-        $response = $this->json('POST', route('api.genders.store'),[
+        $response = $this->json('POST', route('api.genders.store'), [
             'name' => $this->faker->name,
             'is_active' => 'false'
         ]);
 
         $response->assertStatus(422)
-                 ->assertJsonValidationErrors(['is_active']);
+            ->assertJsonValidationErrors(['is_active']);
     }
 
     /**
@@ -120,9 +126,9 @@ class GenderControllerTest extends TestCase
     public function testShow()
     {
         $gender = factory(Gender::class)->create();
-        $response = $this->json('GET', route('api.genders.show', $gender->id) );
+        $response = $this->json('GET', route('api.genders.show', $gender->id));
         $response->assertStatus(200)
-                 ->assertJson($gender->getAttributes());
+            ->assertJson($gender->getAttributes());
 
     }
 
@@ -135,7 +141,8 @@ class GenderControllerTest extends TestCase
     {
         $gender = factory(Gender::class)->create();
         $response = $this->json('PUT', route('api.genders.show', $gender->id), [
-            'name' => 'Series'
+            'name' => 'Series',
+            'categories_id' => [factory(Category::class)->create()->id->toString()],
         ]);
 
         $response->assertStatus(200);
@@ -159,6 +166,7 @@ class GenderControllerTest extends TestCase
         $response->assertJsonValidationErrors(['name']);
 
     }
+
     /**
      * @test
      * @testdox Update Controller  with description null
@@ -169,7 +177,8 @@ class GenderControllerTest extends TestCase
         $gender = factory(Gender::class)->create();
         $response = $this->json('PUT', route('api.genders.show', $gender->id), [
             'name' => $this->faker->name,
-            'description' => null
+            'description' => null,
+            'categories_id' => [factory(Category::class)->create()->id->toString()],
         ]);
 
         $response->assertStatus(200);
@@ -187,7 +196,7 @@ class GenderControllerTest extends TestCase
         $response = $this->json('DELETE', route('api.genders.destroy', $gender->id));
 
         $response->assertStatus(204)
-                 ->assertNoContent();
+            ->assertNoContent();
 
     }
 }
